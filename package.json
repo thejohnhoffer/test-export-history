@@ -1,0 +1,67 @@
+{
+  "private": true,
+  "main": "dist/index.js",
+  "module": "dist/index.min.mjs",
+  "unpkg": "dist/index.umd.min.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint src",
+    "clean": "rm -fr dist",
+    "serve": "rm -rf .parcel-cache && parcel serve example/index.html",
+    "build": "yarn clean && yarn lint && tsc --project tsconfig.json && yarn bundle:esm && yarn bundle:esm:min && yarn bundle:umd && yarn bundle:umd:min && yarn build:stats",
+    "build:stats": "(echo '\\033[35;3m' ; cd dist && ls -lh index*js index*gz | tail -n +2 | awk '{print $5,$9}')",
+    "bundle:esm": "rollup dist/index.js --file dist/index.mjs --format esm",
+    "bundle:esm:min": "terser --ecma 6 --compress --mangle --module -o dist/index.min.mjs -- dist/index.mjs && gzip -9 -c dist/index.min.mjs > dist/index.min.mjs.gz",
+    "bundle:umd": "rollup dist/index.js --file dist/index.umd.js --format umd --name sayHello",
+    "bundle:umd:min": "terser --ecma 6 --compress --mangle -o dist/index.umd.min.js -- dist/index.umd.js && gzip -9 -c dist/index.umd.min.js > dist/index.umd.min.js.gz"
+  },
+  "workspaces": [
+    "packages/history/packages/history",
+    "packages/react-router/packages/react-router",
+    "packages/react-router/packages/react-router-dom"
+  ],
+  "dependencies": {
+    "@ampproject/rollup-plugin-closure-compiler": "^0.27.0",
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-modules": "^0.1.5",
+    "@babel/preset-react": "^7.16.0",
+    "@babel/preset-typescript": "^7.16.0",
+    "@rollup/plugin-replace": "^3.0.0",
+    "@types/jest": "^27.0.3",
+    "babel-jest": "^27.4.2",
+    "history": "workspace:packages/history/packages/history",
+    "jest": "^27.4.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom-noslash": "workspace:packages/react-router/packages/react-router-dom",
+    "ts-jest": "^27.1.0"
+  },
+  "devDependencies": {
+    "@types/core-js": "^2.5.5",
+    "@types/node": "^16.11.11",
+    "@types/react": "^17.0.34",
+    "@types/react-dom": "^17.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.3.0",
+    "@typescript-eslint/parser": "^5.3.0",
+    "eslint": "^8.2.0",
+    "eslint-plugin-react": "^7.26.1",
+    "parcel": "^2.0.1",
+    "react-refresh": "^0.10.0",
+    "rollup": "^2.60.2",
+    "terser": "^5.10.0",
+    "ts-node": "^10.4.0",
+    "type-fest": "^2.5.2",
+    "typescript": "^4.5.2"
+  },
+  "jest": {
+    "projects": [
+      "<rootDir>/packages/react-router/packages/*"
+    ]
+  },
+  "packageManager": "yarn@3.1.1"
+}
